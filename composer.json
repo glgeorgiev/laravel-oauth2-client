@@ -1,0 +1,22 @@
+{
+    "name": "glgeorgiev/laravel-oauth2-client",
+    "description": "OAuth2 Client for Laravel. With a single custom provider.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Georgi Georgiev",
+            "email": "georgi.georgiev@delta.bg"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+	"php": ">=5.4.0",
+	"laravel/framework": "5.0.*",
+	"league/oauth2-client": "0.10.*@dev"
+    },
+    "autoload": {
+	"psr-4": {
+    	    "GLGeorgiev\\LaravelOAuth2Client\\": "src/"
+	}
+    }
+}
