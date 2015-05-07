@@ -28,7 +28,7 @@ class OAuthClientServiceProvider extends ServiceProvider {
                 'clientId'      => Config::get('laravel-oauth2-client.client_app_id'),
                 'clientSecret'  => Config::get('laravel-oauth2-client.client_app_secret'),
                 'redirectUri'   => Config::get('laravel-oauth2-client.client_app_url'),
-                'scopes'        => ['uid', 'email'],
+                'scopes'        => Config::get('laravel-oauth2-client.client_app_scopes'),
             ]);
 
             if (! Request::input('code')) {
@@ -57,7 +57,10 @@ class OAuthClientServiceProvider extends ServiceProvider {
 
                     Auth::login($user);
 
-                    return redirect(Config::get('laravel-oauth2-client.redirect_url'));
+                    if (Config::get('laravel-oauth2-client.redirect_is_route')) {
+                        return redirect(route(Config::get('laravel-oauth2-client.redirect_route')));
+                    }
+                    return redirect(Config::get('laravel-oauth2-client.redirect_path'));
                 } catch (Exception $e) {
                     die('Something went wrong');
                 }
