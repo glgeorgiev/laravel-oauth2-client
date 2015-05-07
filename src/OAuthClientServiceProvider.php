@@ -17,12 +17,16 @@ class OAuthClientServiceProvider extends ServiceProvider {
 
     public function register()
     {
-        //
+        $configPath = __DIR__ . '/../config/laravel-oauth2-client.php';
+        $this->mergeConfigFrom($configPath, 'laravel-oauth2-client');
     }
 
     public function boot(Router $router)
     {
-        $router->get(Config::get('laravel-oauth2-client.client_app_url'), function() {
+        $configPath = __DIR__ . '/../config/laravel-oauth2-client.php';
+        $this->publishes([$configPath => config_path('laravel-oauth2-client.php')], 'config');
+        
+        $router->get(Config::get('laravel-oauth2-client.login_path'), function() {
 
             $provider = new Provider([
                 'clientId'      => Config::get('laravel-oauth2-client.client_app_id'),
