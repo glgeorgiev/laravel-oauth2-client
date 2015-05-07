@@ -11,7 +11,7 @@ use Illuminate\Routing\Router;
 
 use GLGeorgiev\LaravelOAuth2Client\Provider\Provider;
 
-class OAuthServerServiceProvider extends ServiceProvider {
+class OAuthClientServiceProvider extends ServiceProvider {
 
     protected $defer = false;
 
