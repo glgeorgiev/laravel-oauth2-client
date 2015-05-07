@@ -12,7 +12,7 @@ return [
 
 	'login_path'				=> 'login',
 
-	'redirect_is_route'			=> true;
+	'redirect_is_route'			=> true,
 	'redirect_route'            => 'admin.index',
 	'redirect_path'				=> 'admin/dashboard',
 ];
