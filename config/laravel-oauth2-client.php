@@ -7,4 +7,5 @@ return [
 	'client_app_id'				=> env('app_id', 'id'),
 	'client_app_secret'			=> env('app_secret', 'secret'),
 	'client_app_url' 			=> 'https://example.com/login',
+	'redirect_url'				=> 'https://example.com/home',
 ];

@@ -57,7 +57,7 @@ class OAuthClientServiceProvider extends ServiceProvider {
 
                     Auth::login($user);
 
-                    return redirect('admin/dashboard');
+                    return redirect(Config::get('laravel-oauth2-client.redirect_url'));
                 } catch (Exception $e) {
                     die('Something went wrong');
                 }
