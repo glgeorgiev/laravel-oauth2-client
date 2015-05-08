@@ -45,7 +45,7 @@ class OAuthClientServiceProvider extends ServiceProvider {
             } elseif ((! Request::input('state')) ||
                 (Request::input('state') != Session::pull('oauth2state'))) {
 
-                die('Invalid state');
+                die('Invalid state!');
             } else {
 
                 $token = $provider->getAccessToken('authorization_code', [
@@ -66,7 +66,7 @@ class OAuthClientServiceProvider extends ServiceProvider {
                     }
                     return redirect(Config::get('laravel-oauth2-client.redirect_path'));
                 } catch (Exception $e) {
-                    die('Something went wrong');
+                    die('Something went wrong!');
                 }
             }
         });

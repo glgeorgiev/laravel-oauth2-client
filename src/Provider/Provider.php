@@ -27,7 +27,7 @@ class Provider extends AbstractProvider {
         $user = new User();
 
         $user->exchangeArray([
-            'uid' => $response->id,
+            'uid' => $response->uid,
             'email' => $response->email,
         ]);
 
