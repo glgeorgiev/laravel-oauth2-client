@@ -61,6 +61,9 @@ class OAuthClientServiceProvider extends ServiceProvider {
 
                     Auth::login($user);
 
+                    if (Session::has('current_url')) {
+                        return redirect(Session::pull('current_url'));
+                    }
                     if (Config::get('laravel-oauth2-client.redirect_is_route')) {
                         return redirect(route(Config::get('laravel-oauth2-client.redirect_route')));
                     }
