@@ -8,7 +8,7 @@ use Session;
 /**
  * Class FirstTimeAuthCheck
  * @author Georgi Georgiev georgi.georgiev@delta.bg
- * @package DeltaCMS\Http\Middleware
+ * @package GLGeorgiev\LaravelOAuth2Client\Http\Middleware
  */
 class FirstTimeAuthCheck {
 

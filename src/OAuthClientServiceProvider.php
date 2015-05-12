@@ -11,16 +11,38 @@ use Illuminate\Routing\Router;
 
 use GLGeorgiev\LaravelOAuth2Client\Provider\Provider;
 
+/**
+ * Class OAuthClientServiceProvider
+ * @author Georgi Georgiev georgi.georgiev@delta.bg
+ * @package GLGeorgiev\LaravelOAuth2Client
+ */
 class OAuthClientServiceProvider extends ServiceProvider {
 
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
     protected $defer = false;
 
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
     public function register()
     {
         $configPath = __DIR__ . '/../config/laravel-oauth2-client.php';
         $this->mergeConfigFrom($configPath, 'laravel-oauth2-client');
     }
 
+    /**
+     * Bootstrap application services.
+     *
+     * @param Router $router
+     * @return mixed
+     * @throws Exception
+     */
     public function boot(Router $router)
     {
         $configPath = __DIR__ . '/../config/laravel-oauth2-client.php';
