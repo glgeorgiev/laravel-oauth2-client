@@ -3,13 +3,10 @@
 use Auth;
 use Config;
 use Exception;
+use Illuminate\Routing\Router;
+use Illuminate\Support\ServiceProvider;
 use Request;
 use Session;
-
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Routing\Router;
-
-use GLGeorgiev\LaravelOAuth2Client\Provider\Provider;
 
 /**
  * Class OAuthClientServiceProvider
@@ -61,7 +58,7 @@ class OAuthClientServiceProvider extends ServiceProvider {
 
                 $authUrl = $provider->getAuthorizationUrl();
 
-                Session::put('oauth2state', $provider->state);
+                Session::put('oauth2state', $provider->getState());
 
                 return redirect($authUrl);
             } elseif ((! Request::input('state')) ||
@@ -70,16 +67,17 @@ class OAuthClientServiceProvider extends ServiceProvider {
                 die('Invalid state!');
             } else {
 
-                $token = $provider->getAccessToken('authorization_code', [
-                    'code' => Request::input('code')
-                ]);
-
                 try {
-                    $userDetails = $provider->getUserDetails($token);
+
+                    $token = $provider->getAccessToken('authorization_code', [
+                        'code' => Request::input('code')
+                    ]);
+
+                    $resourceOwner = $provider->getResourceOwner($token);
                     
                     $model = Config::get('auth.model');
 
-                    $user = $model::find($userDetails->uid);
+                    $user = $model::find($resourceOwner->getId());
 
                     Auth::login($user);
 
