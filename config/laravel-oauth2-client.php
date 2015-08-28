@@ -8,6 +8,7 @@ return [
 	'client_app_id'				=> env('APP_ID',            'id'),
 	'client_app_secret'			=> env('APP_SECRET',        'secret'),
 	'client_app_uri' 			=> env('APP_URI',           'https://client.com/login'),
+	'client_app_logout'			=> env('APP_LOGOUT',		'/logout'),
 	'client_app_scopes'			=> ['uid'],
 
 	'redirect_is_route'			=> false,

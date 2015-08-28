@@ -13,7 +13,8 @@ use Session;
  * @author Georgi Georgiev georgi.georgiev@delta.bg
  * @package GLGeorgiev\LaravelOAuth2Client
  */
-class OAuthClientServiceProvider extends ServiceProvider {
+class OAuthClientServiceProvider extends ServiceProvider
+{
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -37,14 +38,25 @@ class OAuthClientServiceProvider extends ServiceProvider {
      * Bootstrap application services.
      *
      * @param Router $router
-     * @return mixed
-     * @throws Exception
      */
     public function boot(Router $router)
     {
         $configPath = __DIR__ . '/../config/laravel-oauth2-client.php';
         $this->publishes([$configPath => config_path('laravel-oauth2-client.php')], 'config');
 
+        $this->loginRoute($router);
+
+        $this->logoutRoute($router);
+    }
+
+    /**
+     * The route responsible for logging in the user
+     *
+     * @param Router $router
+     * @return \Response
+     */
+    private function loginRoute(Router $router)
+    {
         $loginPath = Config::get('laravel-oauth2-client.client_app_uri');
         $loginPath = explode('/', $loginPath, 4)[3];
 
@@ -61,28 +73,42 @@ class OAuthClientServiceProvider extends ServiceProvider {
 
                 $authUrl = $provider->getAuthorizationUrl();
 
+                if (Request::input('if_not_authenticated')) {
+                    $authUrl .= '&if_not_authenticated=' .
+                        Request::input('if_not_authenticated');
+                }
+
+                if (Request::input('empty_return')) {
+                    Session::put('empty_return', 1);
+                }
+
                 Session::put('oauth2state', $provider->getState());
 
                 return redirect($authUrl);
             } elseif ((! Request::input('state')) ||
                 (Request::input('state') != Session::pull('oauth2state'))) {
-
+                Session::pull('current_url');
+                Session::pull('empty_return');
                 die('Invalid state!');
             } else {
-
                 try {
-
                     $token = $provider->getAccessToken('authorization_code', [
-                        'code' => Request::input('code')
+                        'code'      => Request::input('code'),
+                        'back_url'  => Session::pull('current_url'),
                     ]);
 
                     $resourceOwner = $provider->getResourceOwner($token);
-                    
+
                     $model = Config::get('auth.model');
 
                     $user = $model::find($resourceOwner->getId());
 
                     Auth::login($user);
+
+                    if (Session::has('empty_return')) {
+                        Session::pull('empty_return');
+                        return '';
+                    }
 
                     if (Session::has('current_url')) {
                         return redirect(Session::pull('current_url'));
@@ -97,4 +123,25 @@ class OAuthClientServiceProvider extends ServiceProvider {
             }
         });
     }
+
+    /**
+     * The route responsible for logging out the user
+     *
+     * @param $router
+     * @return \Response
+     */
+    private function logoutRoute($router)
+    {
+        $router->get(Config::get('laravel-oauth2-client.client_app_logout'), function() {
+            Auth::logout();
+            if (Request::input('empty_return')) {
+                return '';
+            }
+            if (Config::get('laravel-oauth2-client.redirect_is_route')) {
+                return redirect(route(Config::get('laravel-oauth2-client.redirect_route')));
+            }
+            return redirect(Config::get('laravel-oauth2-client.redirect_path'));
+        });
+    }
+
 }

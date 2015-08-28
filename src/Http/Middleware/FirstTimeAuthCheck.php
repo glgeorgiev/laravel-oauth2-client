@@ -26,7 +26,8 @@ class FirstTimeAuthCheck
 			Session::put('not_first', true);
 			if(! Auth::check()) {
 				Session::put('current_url', $request->url());
-				return redirect(Config::get('laravel-oauth2-client.client_app_uri'));
+				return redirect(Config::get('laravel-oauth2-client.client_app_uri') .
+					'?if_not_authenticated=' . $request->url());
 			}
 		}
 
