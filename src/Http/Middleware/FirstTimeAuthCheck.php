@@ -10,7 +10,8 @@ use Session;
  * @author Georgi Georgiev georgi.georgiev@delta.bg
  * @package GLGeorgiev\LaravelOAuth2Client\Http\Middleware
  */
-class FirstTimeAuthCheck {
+class FirstTimeAuthCheck
+{
 
 	/**
 	 * Handle an incoming request.
@@ -25,7 +26,7 @@ class FirstTimeAuthCheck {
 			Session::put('not_first', true);
 			if(! Auth::check()) {
 				Session::put('current_url', $request->url());
-				return redirect(Config::get('laravel-oauth2-client.login_path'));
+				return redirect(Config::get('laravel-oauth2-client.client_app_uri'));
 			}
 		}
 

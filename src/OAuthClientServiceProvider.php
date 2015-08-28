@@ -44,8 +44,11 @@ class OAuthClientServiceProvider extends ServiceProvider {
     {
         $configPath = __DIR__ . '/../config/laravel-oauth2-client.php';
         $this->publishes([$configPath => config_path('laravel-oauth2-client.php')], 'config');
-        
-        $router->get(Config::get('laravel-oauth2-client.login_path'), function() {
+
+        $loginPath = Config::get('laravel-oauth2-client.client_app_uri');
+        $loginPath = explode('/', $loginPath, 4)[3];
+
+        $router->get($loginPath, function() {
 
             $provider = new Provider([
                 'clientId'      => Config::get('laravel-oauth2-client.client_app_id'),

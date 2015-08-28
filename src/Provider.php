@@ -11,7 +11,8 @@ use Psr\Http\Message\ResponseInterface;
  * @author Georgi Georgiev georgi.georgiev@delta.bg
  * @package GLGeorgiev\LaravelOAuth2Client\Provider
  */
-class Provider extends AbstractProvider {
+class Provider extends AbstractProvider
+{
 
     /**
      * @return mixed
@@ -36,7 +37,8 @@ class Provider extends AbstractProvider {
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        return Config::get('laravel-oauth2-client.server_url_user_details');
+        return Config::get('laravel-oauth2-client.server_url_user_details') .
+            '?access_token=' . $token->getToken();;
     }
 
     /**
