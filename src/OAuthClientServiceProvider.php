@@ -53,7 +53,7 @@ class OAuthClientServiceProvider extends ServiceProvider {
             $provider = new Provider([
                 'clientId'      => Config::get('laravel-oauth2-client.client_app_id'),
                 'clientSecret'  => Config::get('laravel-oauth2-client.client_app_secret'),
-                'redirectUri'   => Config::get('laravel-oauth2-client.client_app_url'),
+                'redirectUri'   => Config::get('laravel-oauth2-client.client_app_uri'),
                 'scopes'        => Config::get('laravel-oauth2-client.client_app_scopes'),
             ]);
 
