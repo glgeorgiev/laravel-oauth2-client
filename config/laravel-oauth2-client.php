@@ -6,12 +6,12 @@ return [
 	'server_url_user_details' 	=> env('URL_USER_DETAILS',  'https://server.com/user_details'),
 
 	'client_app_id'				=> env('APP_ID',            'id'),
-	'client_app_secret'			=> env('APP_SECRET',        'secret'),
-	'client_app_uri' 			=> env('APP_URI',           'https://client.com/login'),
-	'client_app_logout'			=> env('APP_LOGOUT',		'/logout'),
-	'client_app_scopes'			=> ['uid'],
+    'client_app_secret'			=> env('APP_SECRET',        'secret'),
+    'client_app_host'           => env('APP_HOST',          'https://client.com/'),
+    'client_app_login' 			=> env('APP_LOGIN',         'login'),
+    'client_app_logout'         => env('APP_LOGOUT',        'logout'),
+    'client_app_scopes'			=> ['uid'],
 
-	'redirect_is_route'			=> false,
-	'redirect_route'            => 'home',
-	'redirect_path'				=> 'home',
+    'default_redirect'			=> 'http://client.com/',
+
 ];

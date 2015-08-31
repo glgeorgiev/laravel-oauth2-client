@@ -57,15 +57,13 @@ class OAuthClientServiceProvider extends ServiceProvider
      */
     private function loginRoute(Router $router)
     {
-        $loginPath = Config::get('laravel-oauth2-client.client_app_uri');
-        $loginPath = explode('/', $loginPath, 4)[3];
-
-        $router->get($loginPath, function() {
+        $router->get(Config::get('laravel-oauth2-client.client_app_login'), function() {
 
             $provider = new Provider([
                 'clientId'      => Config::get('laravel-oauth2-client.client_app_id'),
                 'clientSecret'  => Config::get('laravel-oauth2-client.client_app_secret'),
-                'redirectUri'   => Config::get('laravel-oauth2-client.client_app_uri'),
+                'redirectUri'   => Config::get('laravel-oauth2-client.client_app_host') .
+                                       Config::get('laravel-oauth2-client.client_app_login'),
                 'scopes'        => Config::get('laravel-oauth2-client.client_app_scopes'),
             ]);
 
@@ -73,13 +71,16 @@ class OAuthClientServiceProvider extends ServiceProvider
 
                 $authUrl = $provider->getAuthorizationUrl();
 
-                if (Request::input('if_not_authenticated')) {
-                    $authUrl .= '&if_not_authenticated=' .
-                        Request::input('if_not_authenticated');
+                if (Request::input('target_url')) {
+                    $authUrl .= '&target_url=' .
+                        Request::input('target_url');
+                } else {
+                    $authUrl .= '&target_url=' .
+                        Config::get('laravel-oauth2-client.default_redirect');
                 }
 
-                if (Request::input('empty_return')) {
-                    Session::put('empty_return', 1);
+                if (Request::input('auth_checkup')) {
+                    $authUrl .= '&auth_checkup=1';
                 }
 
                 Session::put('oauth2state', $provider->getState());
@@ -88,13 +89,11 @@ class OAuthClientServiceProvider extends ServiceProvider
             } elseif ((! Request::input('state')) ||
                 (Request::input('state') != Session::pull('oauth2state'))) {
                 Session::pull('current_url');
-                Session::pull('empty_return');
                 die('Invalid state!');
             } else {
                 try {
                     $token = $provider->getAccessToken('authorization_code', [
                         'code'      => Request::input('code'),
-                        'back_url'  => Session::pull('current_url'),
                     ]);
 
                     $resourceOwner = $provider->getResourceOwner($token);
@@ -105,18 +104,11 @@ class OAuthClientServiceProvider extends ServiceProvider
 
                     Auth::login($user);
 
-                    if (Session::has('empty_return')) {
-                        Session::pull('empty_return');
-                        return '';
+                    if (Request::input('target_url')) {
+                        return redirect(Request::input('target_url'));
                     }
 
-                    if (Session::has('current_url')) {
-                        return redirect(Session::pull('current_url'));
-                    }
-                    if (Config::get('laravel-oauth2-client.redirect_is_route')) {
-                        return redirect(route(Config::get('laravel-oauth2-client.redirect_route')));
-                    }
-                    return redirect(Config::get('laravel-oauth2-client.redirect_path'));
+                    return redirect(Config::get('laravel-oauth2-client.default_redirect'));
                 } catch (Exception $e) {
                     die('Something went wrong!');
                 }
@@ -134,13 +126,12 @@ class OAuthClientServiceProvider extends ServiceProvider
     {
         $router->get(Config::get('laravel-oauth2-client.client_app_logout'), function() {
             Auth::logout();
-            if (Request::input('empty_return')) {
-                return '';
+
+            if (Request::input('target_url')) {
+                return redirect(Request::input('target_url'));
             }
-            if (Config::get('laravel-oauth2-client.redirect_is_route')) {
-                return redirect(route(Config::get('laravel-oauth2-client.redirect_route')));
-            }
-            return redirect(Config::get('laravel-oauth2-client.redirect_path'));
+
+            return redirect(Config::get('laravel-oauth2-client.default_redirect'));
         });
     }
 

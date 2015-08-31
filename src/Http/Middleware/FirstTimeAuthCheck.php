@@ -24,10 +24,13 @@ class FirstTimeAuthCheck
 	{
 		if (! Session::has('not_first')) {
 			Session::put('not_first', true);
-			if(! Auth::check()) {
-				Session::put('current_url', $request->url());
-				return redirect(Config::get('laravel-oauth2-client.client_app_uri') .
-					'?if_not_authenticated=' . $request->url());
+			if(! Auth::check() && ! in_array($request->path(), [
+                    Config::get('laravel-oauth2-client.client_app_login'),
+                    Config::get('laravel-oauth2-client.client_app_logout'),
+                ])) {
+				return redirect(Config::get('laravel-oauth2-client.client_app_host') .
+                    Config::get('laravel-oauth2-client.client_app_login') .
+                    '?target_url=' . $request->url() . '&auth_checkup=1');
 			}
 		}
 
