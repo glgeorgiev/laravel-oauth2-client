@@ -2,7 +2,7 @@
 
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 
-class User implements ResourceOwnerInterface
+class ResourceOwner implements ResourceOwnerInterface
 {
 
     protected $response;

@@ -51,7 +51,7 @@ class Provider extends AbstractProvider
 
     protected function createResourceOwner(array $response, AccessToken $token)
     {
-        return new User($response);
+        return new ResourceOwner($response);
     }
 
     protected function checkResponse(ResponseInterface $response, $data)
