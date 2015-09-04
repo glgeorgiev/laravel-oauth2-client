@@ -126,6 +126,8 @@ class OAuthClientServiceProvider extends ServiceProvider
     {
         $router->get(Config::get('laravel-oauth2-client.client_app_logout'), function() {
             Auth::logout();
+            
+            Session::forget('not_first');
 
             if (Request::input('target_url')) {
                 return redirect(Request::input('target_url'));
