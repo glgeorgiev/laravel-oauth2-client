@@ -119,10 +119,10 @@ class OAuthClientServiceProvider extends ServiceProvider
     /**
      * The route responsible for logging out the user
      *
-     * @param $router
+     * @param Router $router
      * @return \Response
      */
-    private function logoutRoute($router)
+    private function logoutRoute(Router $router)
     {
         $router->get(Config::get('laravel-oauth2-client.client_app_logout'), function() {
             Auth::logout();

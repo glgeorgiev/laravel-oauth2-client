@@ -38,7 +38,7 @@ class Provider extends AbstractProvider
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
         return Config::get('laravel-oauth2-client.server_url_user_details') .
-            '?access_token=' . $token->getToken();;
+            '?access_token=' . $token->getToken();
     }
 
     /**
