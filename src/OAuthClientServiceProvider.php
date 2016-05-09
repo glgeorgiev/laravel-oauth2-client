@@ -100,6 +100,14 @@ class OAuthClientServiceProvider extends ServiceProvider
 
                     $model = Config::get('auth.model');
 
+                    if (is_null($model)) {
+                        $model = Config::get('auth.providers.users.model');
+                    }
+
+                    if (is_null($model)) {
+                        die('Unable to determine model class');
+                    }
+
                     $user = $model::find($resourceOwner->getId());
 
                     Auth::login($user);
